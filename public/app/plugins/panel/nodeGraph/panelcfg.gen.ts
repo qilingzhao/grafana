@@ -24,7 +24,15 @@ export enum ZoomMode {
   Greedy = 'greedy',
 }
 
+export enum Direction {
+  BT = 2,
+  LR = 1,
+  RL = 3,
+  TB = 0,
+}
+
 export interface Options {
+  direction?: Direction;
   edges?: {
     /**
      * Unit for the main stat to override what ever is set in the data frame.

@@ -13,7 +13,7 @@ import { Marker } from './Marker';
 import { Node } from './Node';
 import { ViewControls } from './ViewControls';
 import { Config, defaultConfig, useLayout } from './layout';
-import { EdgeDatumLayout, NodeDatum, NodesMarker, ZoomMode } from './types';
+import { EdgeDatumLayout, NodeDatum, NodesMarker, ZoomMode, Direction } from './types';
 import { useCategorizeFrames } from './useCategorizeFrames';
 import { useContextMenu } from './useContextMenu';
 import { useFocusPositionOnLayout } from './useFocusPositionOnLayout';
@@ -113,8 +113,10 @@ interface Props {
   nodeLimit?: number;
   panelId?: string;
   zoomMode?: ZoomMode;
+  direction?: Direction;
 }
-export function NodeGraph({ getLinks, dataFrames, nodeLimit, panelId, zoomMode }: Props) {
+export function NodeGraph({ getLinks, dataFrames, nodeLimit, panelId, zoomMode, direction }: Props) {
+  console.info('NodeGraph direction is ', direction);
   const nodeCountLimit = nodeLimit || defaultNodeCountLimit;
   const { edges: edgesDataFrames, nodes: nodesDataFrames } = useCategorizeFrames(dataFrames);
 

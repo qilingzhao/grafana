@@ -43,12 +43,14 @@ composableKinds: PanelCfg: {
 					// Unit for the secondary stat to override what ever is set in the data frame.
 					secondaryStatUnit?: string
 				}
-				ZoomMode: "cooperative" | "greedy" @cuetsy(kind="enum")
+				ZoomMode:  "cooperative" | "greedy" @cuetsy(kind="enum")
+				Direction: 0 | 1 | 2 | 3            @cuetsy(kind="enum",memberNames="TB|LR|BT|RL")
 				Options: {
 					nodes?: NodeOptions
 					edges?: EdgeOptions
 					// How to handle zoom/scroll events in the node graph
-					zoomMode?: ZoomMode
+					zoomMode?:  ZoomMode
+					direction?: Direction
 				} @cuetsy(kind="interface")
 			}
 		}]

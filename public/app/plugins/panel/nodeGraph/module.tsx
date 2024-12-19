@@ -21,6 +21,19 @@ export const plugin = new PanelPlugin<NodeGraphOptions>(NodeGraphPanel)
         ],
       },
     });
+    builder.addSelect({
+      name: 'Direction',
+      path: 'direction',
+      defaultValue: 'LR',
+      settings: {
+        options: [
+          { value: 'TB', label: 'Top to buttom', description: 'Graphs are laid out from top to bottom.' },
+          { value: 'LR', label: 'Left to right', description: 'Graphs are laid out from left to right.' },
+          { value: 'BT', label: 'Buttom to top', description: 'Graphs are laid out from bottom to top.' },
+          { value: 'RL', label: 'Right to left', description: 'Graphs are laid out from right to left.' },
+        ],
+      },
+    });
     builder.addNestedOptions({
       category: ['Nodes'],
       path: 'nodes',
