@@ -7,6 +7,7 @@ import { Field } from '@grafana/data';
 import { config as grafanaConfig } from '@grafana/runtime';
 
 import { createWorker, createMsaglWorker } from './createLayoutWorker';
+import { Direction as LayerDirection } from './panelcfg.gen';
 import { EdgeDatum, EdgeDatumLayout, NodeDatum } from './types';
 import { useNodeLimit } from './useNodeLimit';
 import { graphBounds } from './utils';
@@ -50,11 +51,11 @@ export function useLayout(
   nodeCountLimit: number,
   width: number,
   rootNodeId?: string,
-  hasFixedPositions?: boolean
+  hasFixedPositions?: boolean,
+  direction?: LayerDirection
 ) {
   const [nodesGraph, setNodesGraph] = useState<NodeDatum[]>([]);
   const [edgesGraph, setEdgesGraph] = useState<EdgeDatumLayout[]>([]);
-
   const [loading, setLoading] = useState(false);
 
   const isMounted = useMountedState();
@@ -110,7 +111,7 @@ export function useLayout(
     setLoading(true);
     // This is async but as I wanted to still run the sync grid layout, and you cannot return promise from effect so
     // having callback seems ok here.
-    const cancel = layout(rawNodes, rawEdges, layoutType, ({ nodes, edges }) => {
+    const cancel = layout(rawNodes, rawEdges, layoutType, direction ?? LayerDirection.LR, ({ nodes, edges }) => {
       if (isMounted()) {
         setNodesGraph(nodes);
         setEdgesGraph(edges);
@@ -119,7 +120,7 @@ export function useLayout(
     });
     layoutWorkerCancelRef.current = cancel;
     return cancel;
-  }, [hasFixedPositions, rawNodes, rawEdges, isMounted]);
+  }, [hasFixedPositions, rawNodes, rawEdges, isMounted, direction]);
 
   // Compute grid separately as it is sync and do not need to be inside effect. Also it is dependant on width while
   // default layout does not care and we don't want to recalculate that on panel resize.
@@ -173,8 +174,10 @@ function layout(
   nodes: NodeDatum[],
   edges: EdgeDatum[],
   engine: 'default' | 'layered',
+  direction: LayerDirection,
   done: (data: { nodes: NodeDatum[]; edges: EdgeDatumLayout[] }) => void
 ) {
+  console.info('layout direction is ', direction);
   const worker = engine === 'default' ? createWorker() : createMsaglWorker();
 
   worker.onmessage = (event: MessageEvent<{ nodes: NodeDatum[]; edges: EdgeDatumLayout[] }>) => {
@@ -198,6 +201,7 @@ function layout(
     })),
     edges,
     config: defaultConfig,
+    direction: direction,
   });
 
   return () => {

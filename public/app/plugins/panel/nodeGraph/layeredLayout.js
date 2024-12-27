@@ -9,12 +9,14 @@ import {
   layoutGeomGraph,
 } from '@msagl/core';
 import { parseDot } from '@msagl/parser';
+import { Direction } from './panelcfg.gen';
 
 /**
  * Use d3 force layout to lay the nodes in a sensible way. This function modifies the nodes adding the x,y positions
  * and also fills in node references in edges instead of node ids.
  */
-export function layout(nodes, edges) {
+export function layout(nodes, edges, config, direction) {
+  console.log('core function layout direction is ', direction);
   const { mappedEdges, DOTToIdMap } = createMappings(nodes, edges);
 
   const dot = graphToDOT(mappedEdges, DOTToIdMap);
